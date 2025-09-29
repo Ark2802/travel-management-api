@@ -93,6 +93,50 @@ travel-management-api/
 http://localhost:3000/api
 ```
 
+### Authentication Endpoints
+
+#### Register User
+
+```http
+POST /api/auth/register
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "password123",
+  "role": "customer" // optional, defaults to "customer"
+}
+```
+
+#### Login User
+
+```http
+POST /api/auth/login
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Login successful",
+  "data": {
+    "user": {
+      "_id": "...",
+      "email": "user@example.com",
+      "role": "customer"
+    },
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  }
+}
+```
+
 ### Protected Routes
 
 All protected routes require the `Authorization` header:
@@ -184,6 +228,38 @@ Authorization: Bearer <admin-token>
 - **Owner**: Can manage vehicles
 - **Driver**: Limited access (future feature)
 - **Customer**: Basic access (future feature)
+
+## 🧪 Testing the API
+
+### 1. Register an Admin User
+
+```bash
+curl -X POST http://localhost:3000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "admin@example.com",
+    "password": "admin123",
+    "role": "admin"
+  }'
+```
+
+### 2. Login and Get Token
+
+```bash
+curl -X POST http://localhost:3000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "admin@example.com",
+    "password": "admin123"
+  }'
+```
+
+### 3. Use Token to Access Protected Route
+
+```bash
+curl -X GET http://localhost:3000/api/users \
+  -H "Authorization: Bearer <your-token-here>"
+```
 
 ## ⚠️ Token Expiry Handling
 
